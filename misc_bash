@@ -1,0 +1,31 @@
+The following line will unzip all the files in a driectory to subdirectories with the same names:
+ls *.zip|awk -F'.zip' '{print "sudo unzip "$0" -d "$1}'|sh
+
+count things in a directory: 
+ls -1 | wc -l
+
+Server Setup:
+Make volume and attach in console.
+sudo mkdir /mnt/enron
+sudo mount /dev/xvdf /mnt/enron
+cd /mnt/enron/
+sudo apt-get update
+sudo apt-get install git
+sudo apt-get clone https://github.com/gregorytadams/CS123_EnronNetworkAnalysis.git
+cd edrm-enron-v2
+sudo python ../CS123_EnronNetworkAnalysis/file_sort.py .
+sudo apt-get install unzip
+sudo apt-get install sqlite3
+
+Create Database:
+sudo sqlite3 enrondb.db
+(on sqlite command line):
+CREATE TABLE MESSAGES(
+ID VARCHAR(50) PRIMARY KEY NOT NULL,
+SENT_TO VARCHAR(200) NOT NULL,
+SENT_FROM VARCHAR(200) NOT NULL,
+SUBJECT VARCHAR(200),
+DATE TIMESTAMP NOT NULL,
+HAS_ATTACHMENTS BOOLEAN);
+
+

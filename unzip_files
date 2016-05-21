@@ -1,6 +1,0 @@
-The following line will unzip all the files in a driectory to subdirectories with the same names:
-ls *.zip|awk -F'.zip' '{print "sudo unzip "$0" -d "$1}'|sh
-
-count things in a directory: 
-ls -1 | wc -l
-
