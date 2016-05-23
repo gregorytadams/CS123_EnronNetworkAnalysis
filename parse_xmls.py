@@ -19,23 +19,42 @@ def read_and_parse(filename):
 def store_in_db(d, c, db):
 	#c, db = open_db(db_path)
 	# fields: to, from, subject, date, has_attachments
+	l = []
+	l2 = []
 	for ID in d:
-		To = d[ID]['#To']['TagValue']
-		From = d[ID]['#From']['TagValue']
-		Subject = d[ID]['#Subject']['TagValue']
-		Date = d[ID]['#DateSent']['TagValue']
-		HasAttachments = d[ID]['#HasAttachments']['TagValue']
-		
+		try:
+			To = d[ID]['#To']['TagValue']
+			From = d[ID]['#From']['TagValue']
+			Date = d[ID]['#DateSent']['TagValue']
+			try:
+	        		Subject = d[ID]['#Subject']['TagValue']
+				HasAttachments = d[ID]['#HasAttachments']['TagValue']
+			except Exception as e2:
+				l2.append(e2)
+				db_args = (ID, To, From, Date)
+				c.execute('INSERT INTO messages (ID, SENT_TO, SENT_FROM, DATE) VALUES(?,?,?,?)', db_args)
+				continue
+		except Exception as e:
+			l.append(e)
+			continue
 		db_args = (ID, To, From, Subject, Date, HasAttachments)
-		c.execute('INSERT INTO messages VALUES(?,?,?,?,?,?)', db_args)
+                c.execute('INSERT INTO messages VALUES(?,?,?,?,?,?)', db_args)
+
+		#except Exception as e:
+		#	l.append(e)
+		#	continue
+	print(l)
+	print(l2)
+	print(len(l2))
+	print(len(l))
 	#commit_db(db)
 
 def main(filename, db_path):
-	c, db = open_db()
-	read_and_parse(filename)
-	
-	print(read_and_parse(filename))
+	c, db = open_db(db_path)
+	d = read_and_parse(filename)
+	store_in_db(d,c,db)
 	commit_db(db)
+
 if __name__ == "__main__":
 	main(sys.argv[1], sys.argv[2])
 	
