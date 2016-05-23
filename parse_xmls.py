@@ -27,7 +27,7 @@ def store_in_db(d, c, db):
 			From = d[ID]['#From']['TagValue']
 			Date = d[ID]['#DateSent']['TagValue']
 			try:
-	        		Subject = d[ID]['#Subject']['TagValue']
+				Subject = d[ID]['#Subject']['TagValue']
 				HasAttachments = d[ID]['#HasAttachments']['TagValue']
 			except Exception as e2:
 				l2.append(e2)
@@ -38,19 +38,20 @@ def store_in_db(d, c, db):
 			l.append(e)
 			continue
 		db_args = (ID, To, From, Subject, Date, HasAttachments)
-                c.execute('INSERT INTO messages VALUES(?,?,?,?,?,?)', db_args)
+		c.execute('INSERT INTO messages VALUES(?,?,?,?,?,?)', db_args)
 
 		#except Exception as e:
 		#	l.append(e)
 		#	continue
-	print(l)
-	print(l2)
+	#print(l)
+	#print(l2)
 	print(len(l2))
 	print(len(l))
 	#commit_db(db)
 
 def main(filename, db_path):
 	c, db = open_db(db_path)
+	print(filename)
 	d = read_and_parse(filename)
 	store_in_db(d,c,db)
 	commit_db(db)
