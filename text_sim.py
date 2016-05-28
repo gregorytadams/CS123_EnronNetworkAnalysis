@@ -42,8 +42,7 @@ class Comparitor():
         '''
         self.corpus = Corpus(corpus_fnames)
         self.compare_fnames = compare_fnames
-        self.model = model
-
+        
     def __iter__(self):
         '''
         '''
