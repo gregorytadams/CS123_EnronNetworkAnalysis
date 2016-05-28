@@ -8,7 +8,7 @@ class Dict(object):
         '''
         '''
         self.fnames = fnames
-        self.dict = corpora.Dictionary(open(f).read().lower().split() for f in fnames) #iterable 
+        self.dict = corpora.Dictionary(open(f).read().lower().split() for f in fnames) #generator 
         stop_ids = [self.dict.token2id[stopword] for stopword in stoplist
                     if stopword in self.dict.token2id]
         once_ids = [tokenid for tokenid, docfreq in self.dict.dfs.items()
@@ -35,7 +35,7 @@ class Comparitor():
     def serialize(self):
         '''
         '''
-        corpora.MmCorpus.serialize('/tmp/corpus.mm', v for v in self)
+        corpora.MmCorpus.serialize('/tmp/corpus.mm', (v for v in self)) #generator
     
      
 
