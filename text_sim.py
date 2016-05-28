@@ -8,20 +8,20 @@ class Dict(object):
         '''
         '''
         self.fnames = fnames
-        self.dict = corpora.Dictionary(open(f).read().lower().split() for f in fnames) #generator 
-        stop_ids = [self.dict.token2id[stopword] for stopword in stoplist
-                    if stopword in self.dict.token2id]
-        once_ids = [tokenid for tokenid, docfreq in self.dict.dfs.items()
+        self.d = corpora.Dictionary(open(f).read().lower().split() for f in fnames) #generator 
+        stop_ids = [self.d.token2id[stopword] for stopword in stoplist
+                    if stopword in self.d.token2id]
+        once_ids = [tokenid for tokenid, docfreq in self.d.dfs.items()
                     if docfreq == 1]
-        self.dict.filter_tokens(stop_ids + once_ids)
-        self.dict.compactify()
+        self.d.filter_tokens(stop_ids + once_ids)
+        self.d.compactify()
      
 class Comparitor():
     def __init__(self, fnames):
         '''
         '''
         self.fnames = fnames
-        self.Dict = Dict(fnames)
+        self.D = Dict(fnames)
         self._serialize()
         self.corpus = corpora.MmCorpus('/tmp/corpus.mm')
         
@@ -29,7 +29,7 @@ class Comparitor():
         '''
         '''
         for f in self.fnames:
-            yield self.Dict.dict.doc2bow(open(f).read().lower().split())
+            yield self.D.d.doc2bow(open(f).read().lower().split())
 
     def _serialize(self):
         '''
