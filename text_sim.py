@@ -36,8 +36,8 @@ class Corpus(object):
         self.dictionary.compactify()
 
         
-class Comparitor(corpus_fnames, compare_fnames):
-    def __init__(self):
+class Comparitor():
+    def __init__(self, corpus_fnames, compare_fnames):
         '''
         '''
         self.corpus = Corpus(corpus_fnames)
