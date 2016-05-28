@@ -32,8 +32,8 @@ class Comparitor():
         models.TfidfModel(self.corpus).save('/tmp/model.tfidf')
         self.tfidf = models.TfidfModel.load('/tmp/model.tfidf')
 
-        models.rpmodel.RpModel(self.tfidf, num_topics=500).save('/tmp/model.rp')
-        self.rp = models.rpmodel.RpModel.load('/tmp/model.rp')
+        #models.rpmodel.RpModel(self.tfidf, num_topics=500).save('/tmp/model.rp')
+        #self.rp = models.rpmodel.RpModel.load('/tmp/model.rp')
         
         
     def __iter__(self):
