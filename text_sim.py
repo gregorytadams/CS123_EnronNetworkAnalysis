@@ -25,6 +25,7 @@ class Comparitor():
         self.D = Dict(fnames)
         self._serialize()
         self.corpus = corpora.MmCorpus('/tmp/corpus.mm')
+        self.tfidf = models.TfidfModel(self.corpus)[self.corpus]
         
     def __iter__(self):
         '''
@@ -37,10 +38,6 @@ class Comparitor():
         '''
         corpora.MmCorpus.serialize('/tmp/corpus.mm', (v for v in self)) #generator
     
-    def tfidf(self):
-        '''
-        '''
-        return models.TfidfModel(self.corpus)[self.corpus]
-
+    
 
             
