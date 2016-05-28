@@ -15,29 +15,31 @@ class Dict(object):
                     if docfreq == 1]
         self.dict.filter_tokens(stop_ids + once_ids)
         self.dict.compactify()
-
-        
+     
 class Comparitor():
-    def __init__(self, corpus_fnames, compare_fnames, given_name = ''):
+    def __init__(self, fnames):
         '''
         '''
-        self.Dict = Dict(corpus_fnames)
-        self.compare_fnames = compare_fnames
-        self.serialize()
+        self.fnames = fnames
+        self.Dict = Dict(fnames)
+        self._serialize()
         self.corpus = corpora.MmCorpus('/tmp/corpus.mm')
         
     def __iter__(self):
         '''
         '''
-        for f in self.compare_fnames:
+        for f in self.fnames:
             yield self.Dict.dict.doc2bow(open(f).read().lower().split())
 
-    def serialize(self):
+    def _serialize(self):
         '''
         '''
         corpora.MmCorpus.serialize('/tmp/corpus.mm', (v for v in self)) #generator
     
-     
+    def tfidf(self):
+        '''
+        '''
+        return models.TfidfModel(self.corpus)[self.corpus]
 
 
             
