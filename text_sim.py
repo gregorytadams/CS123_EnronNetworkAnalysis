@@ -27,15 +27,30 @@ class Corpus(object):
         '''
         '''
         self.fnames = fnames
-        self.dictionary = corpora.Dictionary(open(f).read().lower().split() for f in fnames)
+        self.dictionary = corpora.Dictionary(open(f).read().lower().split() for f in fnames) #iterable 
         stop_ids = [self.dictionary.token2id[stopword] for stopword in stoplist
                     if stopword in self.dictionary.token2id]
         once_ids = [tokenid for tokenid, docfreq in self.dictionary.dfs.items()
                     if docfreq == 1]
         self.dictionary.filter_tokens(stop_ids + once_ids)
         self.dictionary.compactify()
-        #self.corpus = corpora.MmCorpus('models/{}.mm'.format(fname.split('/')[-1]))
 
+        
+class Comparitor(corpus_fnames, compare_fnames):
+    def __init__(self):
+        '''
+        '''
+        self.corpus = Corpus(corpus_fnames)
+        self.compare_fnames = compare_fnames
+        self.model = model
+
+    def __iter__(self):
+        '''
+        '''
+        for f in self.compare_fnames:
+            yield self.corpus.dictionary.doc2bow(open(f).read().lower().split())
+            
+        
      
 
 
