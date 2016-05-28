@@ -1,5 +1,6 @@
 from gensim import corpora, similarities, models
 from collections import defaultdict
+import os
 
 stoplist = set('for a of the and or to in and as at from'.split())
 
