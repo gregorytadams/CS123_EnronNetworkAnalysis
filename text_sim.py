@@ -23,7 +23,7 @@ class Comparitor():
         '''
         self.Dict = Dict(corpus_fnames)
         self.compare_fnames = compare_fnames
-        self.serialize('/tmp/corpus.mm')
+        self.serialize()
         self.corpus = corpora.MmCorpus('/tmp/corpus.mm')
         
     def __iter__(self):
