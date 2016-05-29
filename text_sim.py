@@ -19,9 +19,10 @@ def build_dict(fnames):
     d.compactify()
     return d
 
-def gen_paths(dir):
-    for roots, dirs, files in os.walk(dir):
-        yield (os.path.join(root, name) for name in files)
+def gen_files(path):
+    for file in os.listdir(path):
+        if os.path.isfile(os.path.join(path, file)):
+            yield file
 
 class Comparitor():
     def __init__(self, train_fnames, test_fnames):
