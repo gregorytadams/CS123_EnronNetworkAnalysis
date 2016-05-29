@@ -26,12 +26,8 @@ def tokenize(fname):
 def gen_files(path, n=None):
     '''
     '''
-    if n != None:
-        for f in random.sample(os.listdir(path), n):
-            yield os.path.join(path, f)
-    else:
-        for f in os.listdir(path):
-            yield os.path.join(path, f)
+    for f in os.listdir(path)[:n]:
+        yield os.path.join(path, f)
 
 def gen_tokens(path, n=None):
     '''
@@ -90,7 +86,6 @@ class Comparitor():
             min_name, min_score = l[0]
             if score > min_score:
                 heapq.heapreplace(l, (fname, score))
-                print('Made a heap replace')
         return l        
     
 if __name__ == '__main__':
