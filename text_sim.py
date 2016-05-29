@@ -61,4 +61,6 @@ class Comparitor():
 if __name__ == '__main__':
     args = sys.argv()
     if len(args) == 3:
-        c = Comparitor(gen_files('text_001'), gen_files('all_text'))
+        c = Comparitor(gen_files(args[1]), gen_files(args[2]))
+    else:
+        print('Usage: python3 <train_dir> <test_dir>')
