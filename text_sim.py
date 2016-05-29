@@ -28,12 +28,12 @@ def gen_files(path):
     '''
     '''
     for f in os.listdir(path):
-        yield path + f
+        yield os.path.join(path, f)
 
 def gen_sample(path, n):
     '''
     '''
-    return (path + x for _, x in nlargest(n, ((random.random(), f) for f in gen_files(path))))
+    return (x for _, x in nlargest(n, ((random.random(), f) for f in gen_files(path))))
 
 
 class Comparitor():
