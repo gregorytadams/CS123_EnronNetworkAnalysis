@@ -44,7 +44,7 @@ class Comparitor():
         '''
         '''
         for f in os.listdir(path):
-            yield os.path.join(path, f)
+            yield (f, os.path.join(path, f))
 
     def gen_sample(self, path, n):
         '''
