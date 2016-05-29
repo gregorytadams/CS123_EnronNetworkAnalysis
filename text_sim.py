@@ -1,10 +1,9 @@
 from gensim import corpora, similarities, models
 from collections import defaultdict
-from heapq import nlargest
+import heapq
 import os
 import sys
 import logging
-import numpy as np
 import random
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -38,18 +37,29 @@ class Comparitor():
         '''
         '''
         for f in self.gen_files(self.test_dir):
-            yield self.index[self.d.doc2bow(self.tokenize(f))].mean()
+            yield (f, self.index[self.d.doc2bow(self.tokenize(f))].mean())
 
+    def top_k(self, k):
+        '''
+        '''
+        l = [('', 0)] * k
+        heapq.heapify(l)
+        for fname, score in self.sim_query():
+            min_name, min_score = l[0]
+            if score > min_score:
+                heapq.heapreplace(l, (name, score))
+        return l
+        
     def gen_files(self, path):
         '''
         '''
         for f in os.listdir(path):
-            yield (f, os.path.join(path, f))
+            yield os.path.join(path, f)
 
     def gen_sample(self, path, n):
         '''
         '''
-        return (x for _, x in nlargest(n, ((random.random(), f) for f in self.gen_files(path))))
+        return (x for _, x in heapq.nlargest(n, ((random.random(), f) for f in self.gen_files(path))))
 
     def tokenize(self, fname):
         '''
