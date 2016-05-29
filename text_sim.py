@@ -66,7 +66,8 @@ class Comparitor():
         models.LsiModel(self.corpus, id2word=self.d, num_topics=n_dims).save('models/model.lsi')
         self.lsi = models.LsiModel.load('models/model.lsi')
         print('\nBuilding similarity index\n{}'.format('~'*40))
-        self.index = similarities.MatrixSimilarity(self.lsi[self.corpus], num_features = self.corpus.num_terms)
+        self.index = similarities.MatrixSimilarity(self.lsi[self.corpus],
+                                                   num_features = self.corpus.num_terms)
         
     def __iter__(self):
         '''
@@ -89,6 +90,7 @@ class Comparitor():
             min_name, min_score = l[0]
             if score > min_score:
                 heapq.heapreplace(l, (fname, score))
+                print('Made a heap replace')
         return l        
     
 if __name__ == '__main__':
