@@ -42,16 +42,13 @@ class Comparitor():
         '''
         self.train_fnames = train_fnames
         self.test_fnames = test_fnames
-        self.d = build_dict([train_fnames])       
+        self.d = build_dict(train_fnames)       
         
         corpora.MmCorpus.serialize('/tmp/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('/tmp/corpus.mm')
         
         models.TfidfModel(self.corpus).save('/tmp/model.tfidf')
         self.corpus_tfidf = models.TfidfModel.load('/tmp/model.tfidf')[self.corpus]
-
-        #models.RpModel(self.tfidf[self.corpus], num_topics=500).save('/tmp/model.rp')
-        #self.corpus_rp = models.RpModel.load('/tmp/model.rp')[self.corpus_tfidf]
        
     def __iter__(self):
         '''
