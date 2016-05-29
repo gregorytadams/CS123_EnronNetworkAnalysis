@@ -43,4 +43,4 @@ sudo apt-get install unzip
 sudo apt-get install sqlite3
 sudo apt-get install git
 sudo apt-get clone 
-clone https://github.com/gregorytadams/CS123_EnronNetworkAnalysis.git
+sudo git clone https://github.com/gregorytadams/CS123_EnronNetworkAnalysis.git
