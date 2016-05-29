@@ -92,6 +92,7 @@ if __name__ == '__main__':
     args = sys.argv
     if len(args) == 5:
         c = Comparitor(args[1], n_dims = int(args[4]))
+        print('\nFinding top-{} similarities\n{}'.format(args[3], '~'*40))
         top_k = sorted(c.top_k(int(sys.argv[3])), key=lambda tup: tup[1])[::-1]
         with open(args[2], 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
