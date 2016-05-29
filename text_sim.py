@@ -46,11 +46,11 @@ class Comparitor():
         print('Building dict\n{}'.format('~'*40))
         self.d = build_dict(train_fnames)       
         print('Building corpus\n{}'.format('-'*20))
-        corpora.MmCorpus.serialize('/tmp/corpus.mm', (v for v in self))
-        self.corpus = corpora.MmCorpus('/tmp/corpus.mm')
+        corpora.MmCorpus.serialize('models/corpus.mm', (v for v in self))
+        self.corpus = corpora.MmCorpus('models/corpus.mm')
         print('Building tfidf scores\n{}'.format('-'*20))
-        models.TfidfModel(self.corpus).save('/tmp/model.tfidf')
-        self.tfidf = models.TfidfModel.load('/tmp/model.tfidf')[self.corpus]
+        models.TfidfModel(self.corpus).save('models/model.tfidf')
+        self.tfidf = models.TfidfModel.load('models/model.tfidf')[self.corpus]
         
     def __iter__(self):
         '''
