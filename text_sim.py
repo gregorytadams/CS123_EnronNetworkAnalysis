@@ -51,8 +51,8 @@ class Comparitor():
         print('Building LSI model\n{}'.format('-'*20))
         models.LsiModel(self.corpus, id2word=self.d, num_topics=num_topics).save('models/model.lsi')
         self.lsi = models.LsiModel.load('models/model.lsi')
-        print('Building similarity index\n{}'.format('-'*20))
-        self.index = similarities.Similarity('models/lsi.index', self.lsi[self.corpus], self.corpus.num_terms)
+        #print('Building similarity index\n{}'.format('-'*20))
+        #self.index = similarities.Similarity('models/lsi.index', self.lsi[self.corpus], self.corpus.num_terms)
         
     def __iter__(self):
         '''
