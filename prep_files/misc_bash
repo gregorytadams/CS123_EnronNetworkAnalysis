@@ -28,4 +28,19 @@ SUBJECT VARCHAR(200),
 DATE TIMESTAMP NOT NULL,
 HAS_ATTACHMENTS BOOLEAN);
 
-
+Setting up the other EC2 instances for distributive computing:
+wget https://bootstrap.pypa.io/get-pip.py
+sudo python3 get-pip.py
+sudo python3 -m pip install --upgrade numpy
+sudo python3 -m pip install --upgrade scipy
+sudo python3 -m pip install --upgrade gensim
+sudo python3 -m pip install --upgrade networkx
+sudo mkdir /mnt/enron
+sudo mount /dev/xvdf /mnt/enron
+cd /mnt/enron/
+sudo apt-get update
+sudo apt-get install unzip
+sudo apt-get install sqlite3
+sudo apt-get install git
+sudo apt-get clone 
+clone https://github.com/gregorytadams/CS123_EnronNetworkAnalysis.git
