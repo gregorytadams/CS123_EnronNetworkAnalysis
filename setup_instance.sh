@@ -7,9 +7,6 @@ sudo python3 -m pip install --upgrade scipy
 sudo python3 -m pip install --upgrade gensim
 sudo python3 -m pip install --upgrade networkx
 sudo python3 -m pip install --upgrade IPython
-sudo mkdir /mnt/enron
-sudo mount /dev/xvdf /mnt/enron
-cd /mnt/enron/CS123_EnronNetworkAnalysis
 sudo apt-get update
 sudo apt-get install unzip
 sudo apt-get install sqlite3
