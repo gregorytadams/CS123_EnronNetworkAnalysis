@@ -10,41 +10,14 @@ import random
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 stopwords = set('for a of the and or to in and as at from'.split())
 
-def tokenize(fname):
-    '''
-    '''
-    return [word for word in open(fname).read().lower().split() if not word in stopwords]
-
-def build_dict(fnames):
-    '''
-    '''
-    files_gen = (tokenize(f) for f in fnames)
-    d = corpora.Dictionary(i for i in files_gen) 
-    once_ids = [tokenid for tokenid, docfreq in d.dfs.items() if docfreq == 1]
-    d.filter_tokens(once_ids)
-    d.compactify()
-    return d
-
-def gen_files(path):
-    '''
-    '''
-    for f in os.listdir(path):
-        yield os.path.join(path, f)
-
-def gen_sample(path, n):
-    '''
-    '''
-    return (x for _, x in nlargest(n, ((random.random(), f) for f in gen_files(path))))
-
-
 class Comparitor():
-    def __init__(self, train_fnames='', test_fnames='', num_topics=200):
+    def __init__(self, train_dir, test_dir, num_topics=200):
         '''
         '''
-        self._train_fnames = train_fnames
-        self._test_fnames = test_fnames
+        self.train_dir = train_dir
+        self.test_dir = test_dir
         print('Building dict\n{}'.format('~'*40))
-        self.d = build_dict(train_fnames)       
+        self.d = build_dict(train_dir) 
         print('Building corpus\n{}'.format('-'*20))
         corpora.MmCorpus.serialize('models/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
@@ -57,16 +30,41 @@ class Comparitor():
     def __iter__(self):
         '''
         '''
-        for f in self._train_fnames:
-            yield self.d.doc2bow(tokenize(f))
+        for f in self.gen_files(self.train_dir):
+            yield self.d.doc2bow(self.tokenize(f))
 
     def sim_query(self):
         '''
         '''
-        for f in self._test_fnames:
-            yield self.index[self.d.doc2bow(tokenize(f))].mean()
-                    
+        for f in self.gen_files(self.test_dir):
+            yield self.index[self.d.doc2bow(self.tokenize(f))].mean()
 
+    def gen_files(path):
+        '''
+        '''
+        for f in os.listdir(path):
+            yield os.path.join(path, f)
+
+    def gen_sample(path, n):
+        '''
+        '''
+        return (x for _, x in nlargest(n, ((random.random(), f) for f in gen_files(path))))
+
+    def tokenize(fname):
+        '''
+        '''
+        return [word for word in open(fname).read().lower().split() if not word in stopwords]
+
+    def build_dict(train_dir):
+        '''
+        '''
+        files_gen = (self.tokenize(f) for f in self.gen_files(train_dir))
+        d = corpora.Dictionary(i for i in files_gen) 
+        once_ids = [tokenid for tokenid, docfreq in d.dfs.items() if docfreq == 1]
+        d.filter_tokens(once_ids)
+        d.compactify()
+        return d
+    
 if __name__ == '__main__':
     args = sys.argv
     if len(args) == 3:
