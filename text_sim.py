@@ -2,6 +2,7 @@ from gensim import corpora, similarities, models
 from collections import defaultdict
 from heapq import nlargest
 import os
+import sys
 import logging
 import numpy as np
 import random
@@ -42,7 +43,7 @@ class Comparitor():
         '''
         self.train_fnames = train_fnames
         self.test_fnames = test_fnames
-        print('Building dict\n{}'.format('-'*20))
+        print('Building dict\n{}'.format('~'*40))
         self.d = build_dict(train_fnames)       
         print('Building corpus\n{}'.format('-'*20))
         corpora.MmCorpus.serialize('/tmp/corpus.mm', (v for v in self))
@@ -57,7 +58,7 @@ class Comparitor():
         for f in self.test_fnames:
             yield self.d.doc2bow(tokenize(f))
 
-        
-    
-
-            
+if __name__ == '__main__':
+    args = sys.argv()
+    if len(args) == 3:
+        c = Comparitor(gen_files('text_001'), gen_files('all_text'))
