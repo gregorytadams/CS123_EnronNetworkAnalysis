@@ -39,23 +39,23 @@ class Comparitor():
         for f in self.gen_files(self.test_dir):
             yield self.index[self.d.doc2bow(self.tokenize(f))].mean()
 
-    def gen_files(path):
+    def gen_files(self, path):
         '''
         '''
         for f in os.listdir(path):
             yield os.path.join(path, f)
 
-    def gen_sample(path, n):
+    def gen_sample(self, path, n):
         '''
         '''
-        return (x for _, x in nlargest(n, ((random.random(), f) for f in gen_files(path))))
+        return (x for _, x in nlargest(n, ((random.random(), f) for f in self.gen_files(path))))
 
-    def tokenize(fname):
+    def tokenize(self, fname):
         '''
         '''
         return [word for word in open(fname).read().lower().split() if not word in stopwords]
 
-    def build_dict(train_dir):
+    def build_dict(self, train_dir):
         '''
         '''
         files_gen = (self.tokenize(f) for f in self.gen_files(train_dir))
