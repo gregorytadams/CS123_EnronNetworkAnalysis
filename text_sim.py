@@ -1,5 +1,6 @@
 from gensim import corpora, similarities, models
 from collections import defaultdict
+from heapq import nlargest
 import os
 import logging
 import numpy as np
@@ -28,6 +29,12 @@ def gen_files(path):
     '''
     for f in os.listdir(path):
         yield f
+
+def gen_sample(path, n):
+    '''
+    '''
+    return (x for _, x in nlargest(n, ((random.random(), f) for f in gen_files(path))))
+
 
 class Comparitor():
     def __init__(self, train_fnames, test_fnames):
