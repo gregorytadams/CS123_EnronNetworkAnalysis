@@ -29,11 +29,6 @@ def gen_files(path, n=None):
     for f in os.listdir(path)[:n]:
         yield os.path.join(path, f)
 
-#def gen_sample(path, n):
-    #'''
-    #'''
-    #return (x for _, x in heapq.nlargest(n, ((random.random(), f) for f in gen_files(path))))
-
 def gen_tokens(path, n=None):
     '''
     '''
@@ -42,10 +37,10 @@ def gen_tokens(path, n=None):
         if len(t) > 0:
             yield (f, t)
             
-def build_dict(train_dir, n=None):
+def build_dict(path, n=None):
     '''
     '''
-    tokens_gen = (t for _, t in gen_tokens(train_dir))
+    tokens_gen = (t for _, t in gen_tokens(path, n))
     d = corpora.Dictionary(i for i in tokens_gen) 
     once_ids = [tokenid for tokenid, docfreq in d.dfs.items() if docfreq == 1]
     d.filter_tokens(once_ids)
@@ -53,19 +48,18 @@ def build_dict(train_dir, n=None):
     return d
 
 class Comparitor():
-    def __init__(self, train_dir, test_dir, num_dims=200):
+    def __init__(self, path, n_dims=200):
         '''
         '''
         self.n_train_files = 1000
-        self.train_dir = train_dir
-        self.test_dir = test_dir
+        self.path = path
         print('\nBuilding dict\n{}'.format('~'*40))
-        self.d = build_dict(train_dir, n=self.n_train_files) 
+        self.d = build_dict(path, n=self.n_train_files) 
         print('\nBuilding corpus\n{}'.format('~'*40))
         corpora.MmCorpus.serialize('models/corpus.mm', (v for _, v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
         print('\nBuilding LSI model\n{}'.format('~'*40))
-        models.LsiModel(self.corpus, id2word=self.d, num_topics=num_dims).save('models/model.lsi')
+        models.LsiModel(self.corpus, id2word=self.d, num_topics=n_dims).save('models/model.lsi')
         self.lsi = models.LsiModel.load('models/model.lsi')
         print('\nBuilding similarity index\n{}'.format('~'*40))
         self.index = similarities.Similarity('models/lsi.index', self.lsi[self.corpus], self.corpus.num_terms)
@@ -73,13 +67,13 @@ class Comparitor():
     def __iter__(self):
         '''
         '''
-        for f, t in gen_tokens(self.train_dir, self.n_train_files):
+        for f, t in gen_tokens(self.path, self.n_train_files):
             yield (f, self.d.doc2bow(t))
 
     def sim_query(self):
         '''
         '''
-        for f, t in gen_tokens(self.test_dir):
+        for f, t in gen_tokens(self.path):
             yield (f, self.index[self.d.doc2bow(t)].mean())
 
     def top_k(self, k):
@@ -95,12 +89,12 @@ class Comparitor():
     
 if __name__ == '__main__':
     args = sys.argv
-    if len(args) == 6:
-        c = Comparitor(args[1], args[2], num_dims = int(args[5]))
-        top_k = sorted(c.top_k(int(sys.argv[4])), key=lambda tup: tup[1])[::-1]
-        with open(args[3], 'w', newline='') as csvfile:
+    if len(args) == 5:
+        c = Comparitor(args[1], num_dims = int(args[4]))
+        top_k = sorted(c.top_k(int(sys.argv[3])), key=lambda tup: tup[1])[::-1]
+        with open(args[2], 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             for tup in top_k:
                 writer.writerow(tup)   
     else:
-        print('Usage: python3 <train_dir> <test_dir> <output_csv_fname> <k (top k)> <n (dimensions)>')
+        print('Usage: python3 <path> <output_csv_fname> <k (top k)> <n (dimensions)>')
