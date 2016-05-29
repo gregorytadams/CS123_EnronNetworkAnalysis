@@ -8,7 +8,8 @@ import random
 import csv
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-stopwords = set('for a of the and or to in and as at from this is with that be any all if'.split())
+stopwords = set(('for a of the and or to in and as at from this is with that be any all if'+\
+                 'x-sdoc: i ').split())
 
 def tokenize(fname):
     '''
@@ -17,10 +18,10 @@ def tokenize(fname):
     n = 0
     for line in open(fname):
         n += 1
-        if n > 4:
+        if n > 6:
             for word in line.lower().split():
                 words.append(word)
-    return words[:-46]
+    return words[:-50]
     
 def gen_files(path):
     '''
@@ -77,7 +78,7 @@ class Comparitor():
     def sim_query(self):
         '''
         '''
-        for f, t in gen_tokens(self.train_dir):
+        for f, t in gen_tokens(self.test_dir):
             yield (f, self.index[self.d.doc2bow(t)].mean())
 
     def top_k(self, k):
