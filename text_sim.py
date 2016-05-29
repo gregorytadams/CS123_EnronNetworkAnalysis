@@ -59,7 +59,7 @@ class Comparitor():
             yield self.d.doc2bow(tokenize(f))
 
 if __name__ == '__main__':
-    args = sys.argv()
+    args = sys.argv
     if len(args) == 3:
         c = Comparitor(gen_files(args[1]), gen_files(args[2]))
     else:
