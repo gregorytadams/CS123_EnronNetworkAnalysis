@@ -9,9 +9,13 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 stoplist = set('for a of the and or to in and as at from'.split())
 
 def tokenize(fname):
+    '''
+    '''
     return [word for word in open(fname).read().lower().split() if (not word in stoplist)]
 
 def build_dict(fnames):
+    '''
+    '''
     files_gen = (tokenize(f) for f in fnames)
     d = corpora.Dictionary(i for i in files_gen) 
     once_ids = [tokenid for tokenid, docfreq in d.dfs.items() if docfreq == 1]
@@ -20,9 +24,10 @@ def build_dict(fnames):
     return d
 
 def gen_files(path):
-    for file in os.listdir(path):
-        if os.path.isfile(os.path.join(path, file)):
-            yield file
+    '''
+    '''
+    for f in os.listdir(path):
+        yield f
 
 class Comparitor():
     def __init__(self, train_fnames, test_fnames):
