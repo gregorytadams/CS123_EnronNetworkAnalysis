@@ -2,17 +2,17 @@ from gensim import corpora, similarities, models
 from collections import defaultdict
 from heapq import nlargest
 import os
-#import logging
+import logging
 import numpy as np
 import random
 
-#logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-stoplist = set('for a of the and or to in and as at from'.split())
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+stopwords = set('for a of the and or to in and as at from'.split())
 
 def tokenize(fname):
     '''
     '''
-    return [word for word in open(fname).read().lower().split() if (not word in stoplist)]
+    return [word for word in open(fname).read().lower().split() if not word in stopwords]
 
 def build_dict(fnames):
     '''
@@ -42,17 +42,14 @@ class Comparitor():
         '''
         self.train_fnames = train_fnames
         self.test_fnames = test_fnames
-        print('building dict...')
+        print('Building dict\n{}'.format('-'*20))
         self.d = build_dict(train_fnames)       
-        print('done')
-        print('building corpus...')
+        print('Building corpus\n{}'.format('-'*20))
         corpora.MmCorpus.serialize('/tmp/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('/tmp/corpus.mm')
-        print('done')
-        print('building tfidf corpus...')
+        print('Building tfidf scores\n{}'.format('-'*20))
         models.TfidfModel(self.corpus).save('/tmp/model.tfidf')
-        self.corpus_tfidf = models.TfidfModel.load('/tmp/model.tfidf')[self.corpus]
-        print('done')
+        self.tfidf = models.TfidfModel.load('/tmp/model.tfidf')[self.corpus]
         
     def __iter__(self):
         '''
