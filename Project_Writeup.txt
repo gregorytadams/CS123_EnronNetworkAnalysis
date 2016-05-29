@@ -1,0 +1,18 @@
+CS123 Project Writeup
+Jon Kyl, Greg Adams, Graham Northrup
+
+Data set used: Enron Email Dataset. 210 GB total w/ 1.3 million email files.
+
+Hypotheses tested: Do the most "average" emails as found by our algorithm match with "stereotypical" business language. For example, do the most average emails contain lots of "synergy" and "investor".
+
+Algorithms Used: To find the average file we random sample the text files to create an average email corpus. This corpus was then vectorized and compared to each email individually as a vector. The top k as determined by cosine similarity were then pulled from each to run again to find the most average of the average.
+
+Big Data Approaches: Distributive computing. We launched 10(OR MORE) EC2 instances and fired each to run on a single bucket of files. Each instance then returned the top k from each bucket and then one final similarity test was run on these collected groups of k emails.
+
+Why Big Data: First this approach requires saving the model built into memory so to get a model of 1.3 million emails means a massively large dictionary and memory problems. So distributive computing works to resolve this problem. Also when run on a single machine the algorithm takes upward of 30 hours due to randomly sampling the whole data set. 
+
+Challenges Faced:
+
+Results:
+
+How did we find our data set: We found or dataset directly from the AWS public dataset website. This made it easy to work with as a volume etc.
