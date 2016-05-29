@@ -38,25 +38,34 @@ def gen_sample(path, n):
 
 
 class Comparitor():
-    def __init__(self, train_fnames, test_fnames):
+    def __init__(self, train_fnames='', test_fnames='', num_topics=200):
         '''
         '''
-        self.train_fnames = train_fnames
-        self.test_fnames = test_fnames
+        self._train_fnames = train_fnames
+        self._test_fnames = test_fnames
         print('Building dict\n{}'.format('~'*40))
         self.d = build_dict(train_fnames)       
-        print('Building corpus\n{}'.format('-'*20))
+        print('Building corpus\n{}'.format('-'*20))ld
         corpora.MmCorpus.serialize('models/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
-        print('Building tfidf scores\n{}'.format('-'*20))
-        models.TfidfModel(self.corpus).save('models/model.tfidf')
-        self.tfidf = models.TfidfModel.load('models/model.tfidf')[self.corpus]
+        print('Building LSI model\n{}'.format('-'*20))
+        models.LsiModel(self.corpus, id2word=self.d, num_topics=num_topics).save('models/model.lsi')
+        self.lsi = models.LsiModel.load('models/model.lsi')[self.corpus]
+        print('Building similarity index\n{}'.format('-'*20))
+        self.index = similarities.Similarity('models/lsi.index', self.lsi[self.corpus], self.corpus.num_terms)
         
     def __iter__(self):
         '''
         '''
-        for f in self.test_fnames:
+        for f in self._train_fnames:
             yield self.d.doc2bow(tokenize(f))
+
+    def sim_query(self):
+        '''
+        '''
+        for f in self._test_fnames:
+            yield self.index[self.d.doc2bow(tokenize(f))].mean()
+                    
 
 if __name__ == '__main__':
     args = sys.argv
