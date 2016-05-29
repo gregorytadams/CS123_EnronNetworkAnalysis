@@ -84,8 +84,6 @@ if __name__ == '__main__':
         with open(args[3], 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             for tup in top_k:
-                writer.writerow(tup)
-            
-        
+                writer.writerow(tup)   
     else:
         print('Usage: python3 <train_dir> <test_dir> <output_csv_fname> <k (top k)> <n (dimensions)>')
