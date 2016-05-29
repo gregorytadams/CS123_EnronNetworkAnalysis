@@ -17,7 +17,7 @@ class Comparitor():
         self.train_dir = train_dir
         self.test_dir = test_dir
         print('Building dict\n{}'.format('~'*40))
-        self.d = build_dict(train_dir) 
+        self.d = self.build_dict(train_dir) 
         print('Building corpus\n{}'.format('-'*20))
         corpora.MmCorpus.serialize('models/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
