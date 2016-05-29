@@ -2,12 +2,12 @@ from gensim import corpora, similarities, models
 from collections import defaultdict
 from heapq import nlargest
 import os
-import logging
+#import logging
 import numpy as np
 import random
 
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-stoplist = set('for a of the and or to in and as at from'.split())
+#logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+#stoplist = set('for a of the and or to in and as at from'.split())
 
 def tokenize(fname):
     '''
@@ -42,14 +42,18 @@ class Comparitor():
         '''
         self.train_fnames = train_fnames
         self.test_fnames = test_fnames
+        print('building dict...')
         self.d = build_dict(train_fnames)       
-        
+        print('done')
+        print('building corpus...')
         corpora.MmCorpus.serialize('/tmp/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('/tmp/corpus.mm')
-        
+        print('done')
+        print('building tfidf corpus...')
         models.TfidfModel(self.corpus).save('/tmp/model.tfidf')
         self.corpus_tfidf = models.TfidfModel.load('/tmp/model.tfidf')[self.corpus]
-       
+        print('done')
+        
     def __iter__(self):
         '''
         '''
