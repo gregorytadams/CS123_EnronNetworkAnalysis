@@ -45,7 +45,7 @@ class Comparitor():
         self._test_fnames = test_fnames
         print('Building dict\n{}'.format('~'*40))
         self.d = build_dict(train_fnames)       
-        print('Building corpus\n{}'.format('-'*20))ld
+        print('Building corpus\n{}'.format('-'*20))
         corpora.MmCorpus.serialize('models/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
         print('Building LSI model\n{}'.format('-'*20))
