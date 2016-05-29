@@ -7,7 +7,7 @@ import numpy as np
 import random
 
 #logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-#stoplist = set('for a of the and or to in and as at from'.split())
+stoplist = set('for a of the and or to in and as at from'.split())
 
 def tokenize(fname):
     '''
