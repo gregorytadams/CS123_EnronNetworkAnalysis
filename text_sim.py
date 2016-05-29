@@ -47,7 +47,7 @@ class Comparitor():
         for fname, score in self.sim_query():
             min_name, min_score = l[0]
             if score > min_score:
-                heapq.heapreplace(l, (name, score))
+                heapq.heapreplace(l, (fname, score))
         return l
         
     def gen_files(self, path):
