@@ -81,7 +81,7 @@ if __name__ == '__main__':
     if len(args) == 6:
         c = Comparitor(args[1], args[2], num_dims = int(args[5]))
         top_k = sorted(c.top_k(int(sys.argv[4])), key=lambda tup: tup[1])[::-1]
-        with open(args[3], 'wb') as csvfile:
+        with open(args[3], 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             for tup in top_k:
                 writer.writerow(tup)
