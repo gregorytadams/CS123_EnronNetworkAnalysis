@@ -8,7 +8,7 @@ import random
 import csv
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-stopwords = set('for a of the and or to in and as at from'.split())
+stopwords = set('for a of the and or to in and as at from this is with that be any all if'.split())
 
 class Comparitor():
     def __init__(self, train_dir, test_dir, num_dims=200):
@@ -16,15 +16,15 @@ class Comparitor():
         '''
         self.train_dir = train_dir
         self.test_dir = test_dir
-        print('Building dict\n{}'.format('~'*40))
+        print('\nBuilding dict\n{}'.format('~'*40))
         self.d = self.build_dict(train_dir) 
-        print('Building corpus\n{}'.format('~'*40))
+        print('\nBuilding corpus\n{}'.format('~'*40))
         corpora.MmCorpus.serialize('models/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
-        print('Building LSI model\n{}'.format('~'*40))
+        print('\nBuilding LSI model\n{}'.format('~'*40))
         models.LsiModel(self.corpus, id2word=self.d, num_topics=num_dims).save('models/model.lsi')
         self.lsi = models.LsiModel.load('models/model.lsi')
-        print('Building similarity index\n{}'.format('~'*40))
+        print('\nBuilding similarity index\n{}'.format('~'*40))
         self.index = similarities.Similarity('models/lsi.index', self.lsi[self.corpus], self.corpus.num_terms)
         
     def __iter__(self):
@@ -64,7 +64,14 @@ class Comparitor():
     def tokenize(self, fname):
         '''
         '''
-        return [word for word in open(fname).read().lower().split()[:-44] if not word in stopwords]
+        words = []
+        n = 0
+        for line in open(fname):
+            n += 1
+            if n > 4:
+                for word in line.lower().split():
+                    words.append(word)
+        return words[:-44]
 
     def build_dict(self, train_dir):
         '''
