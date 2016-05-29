@@ -43,13 +43,13 @@ class Comparitor():
         '''
         '''
         for f in self.gen_files(self.train_dir):
-            yield self.d.doc2bow(self.tokenize(f))
+            yield self.d.doc2bow(tokenize(f))
 
     def sim_query(self):
         '''
         '''
         for f in self.gen_files(self.test_dir):
-            yield (f, self.index[self.d.doc2bow(self.tokenize(f))].mean())
+            yield (f, self.index[self.d.doc2bow(tokenize(f))].mean())
 
     def top_k(self, k):
         '''
@@ -76,7 +76,7 @@ class Comparitor():
     def build_dict(self, train_dir):
         '''
         '''
-        files_gen = (self.tokenize(f) for f in self.gen_files(train_dir))
+        files_gen = (tokenize(f) for f in self.gen_files(train_dir))
         d = corpora.Dictionary(i for i in files_gen) 
         once_ids = [tokenid for tokenid, docfreq in d.dfs.items() if docfreq == 1]
         d.filter_tokens(once_ids)
