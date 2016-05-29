@@ -23,10 +23,10 @@ def tokenize(fname):
                 words.append(word)
     return words[:-50]
     
-def gen_files(path):
+def gen_files(path, n=None):
     '''
     '''
-    for f in os.listdir(path):
+    for f in os.listdir(path)[:n]:
         yield os.path.join(path, f)
 
 #def gen_sample(path, n):
@@ -34,15 +34,15 @@ def gen_files(path):
     #'''
     #return (x for _, x in heapq.nlargest(n, ((random.random(), f) for f in gen_files(path))))
 
-def gen_tokens(path):
+def gen_tokens(path, n=None):
     '''
     '''
-    for f in gen_files(path):
+    for f in gen_files(path, n):
         t = tokenize(f)
         if len(t) > 0:
             yield (f, t)
             
-def build_dict(train_dir):
+def build_dict(train_dir, n=None):
     '''
     '''
     tokens_gen = (t for _, t in gen_tokens(train_dir))
@@ -56,10 +56,11 @@ class Comparitor():
     def __init__(self, train_dir, test_dir, num_dims=200):
         '''
         '''
+        self.n_train_files = 1000
         self.train_dir = train_dir
         self.test_dir = test_dir
         print('\nBuilding dict\n{}'.format('~'*40))
-        self.d = build_dict(train_dir) 
+        self.d = build_dict(train_dir, n=self.n_train_files) 
         print('\nBuilding corpus\n{}'.format('~'*40))
         corpora.MmCorpus.serialize('models/corpus.mm', (v for _, v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
@@ -72,7 +73,7 @@ class Comparitor():
     def __iter__(self):
         '''
         '''
-        for f, t in gen_tokens(self.train_dir):
+        for f, t in gen_tokens(self.train_dir, self.n_train_files):
             yield (f, self.d.doc2bow(t))
 
     def sim_query(self):
