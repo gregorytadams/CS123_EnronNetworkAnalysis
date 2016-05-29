@@ -62,7 +62,6 @@ class Comparitor():
         models.LsiModel(self.corpus, id2word=self.d, num_topics=n_dims).save('models/model.lsi')
         self.lsi = models.LsiModel.load('models/model.lsi')
         print('\nBuilding similarity index\n{}'.format('~'*40))
-        #self.index = similarities.Similarity('models/lsi.index', self.lsi[self.corpus], num_features = self.corpus.num_nnz)
         self.index = similarities.MatrixSimilarity(self.lsi[self.corpus], num_features = self.corpus.num_terms)
         
     def __iter__(self):
@@ -92,8 +91,9 @@ if __name__ == '__main__':
     args = sys.argv
     if len(args) == 5:
         c = Comparitor(args[1], n_dims = int(args[4]))
-        print('\nFinding top-{} similarities\n{}'.format(args[3], '~'*40))
+        print('\nFinding top {} similarities\n{}'.format(args[3], '~'*40))
         top_k = sorted(c.top_k(int(sys.argv[3])), key=lambda tup: tup[1])[::-1]
+        print('\nWriting top {} similarities to "{}"\n{}'.format(args[3], args[2], '~'*40))
         with open(args[2], 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
             for tup in top_k:
