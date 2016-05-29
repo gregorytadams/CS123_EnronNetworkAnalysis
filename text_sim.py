@@ -20,10 +20,37 @@ def tokenize(fname):
         if n > 4:
             for word in line.lower().split():
                 words.append(word)
-    words = words[:-46]
-    if len(words) > 0:
-        return words
+    return words[:-46]
     
+def gen_files(path):
+    '''
+    '''
+    for f in os.listdir(path):
+        yield os.path.join(path, f)
+
+#def gen_sample(path, n):
+    #'''
+    #'''
+    #return (x for _, x in heapq.nlargest(n, ((random.random(), f) for f in gen_files(path))))
+
+def gen_tokens(path):
+    '''
+    '''
+    for f in gen_files(path):
+        t = tokenize(f)
+        if len(t) > 0:
+            yield (f, t)
+            
+def build_dict(train_dir):
+    '''
+    '''
+    tokens_gen = (t for _, t in gen_tokens(train_dir))
+    d = corpora.Dictionary(i for i in tokens_gen) 
+    once_ids = [tokenid for tokenid, docfreq in d.dfs.items() if docfreq == 1]
+    d.filter_tokens(once_ids)
+    d.compactify()
+    return d
+
 class Comparitor():
     def __init__(self, train_dir, test_dir, num_dims=200):
         '''
@@ -33,7 +60,7 @@ class Comparitor():
         print('\nBuilding dict\n{}'.format('~'*40))
         self.d = self.build_dict(train_dir) 
         print('\nBuilding corpus\n{}'.format('~'*40))
-        corpora.MmCorpus.serialize('models/corpus.mm', (v for v in self))
+        corpora.MmCorpus.serialize('models/corpus.mm', (v for _, v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
         print('\nBuilding LSI model\n{}'.format('~'*40))
         models.LsiModel(self.corpus, id2word=self.d, num_topics=num_dims).save('models/model.lsi')
@@ -44,14 +71,14 @@ class Comparitor():
     def __iter__(self):
         '''
         '''
-        for f in self.gen_files(self.train_dir):
-            yield self.d.doc2bow(tokenize(f))
+        for f, t in gen_tokens(self.train_dir):
+            yield (f, self.d.doc2bow(t))
 
     def sim_query(self):
         '''
         '''
-        for f in self.gen_files(self.test_dir):
-            yield (f, self.index[self.d.doc2bow(tokenize(f))].mean())
+        for f, t in gen_tokens(self.train_dir):
+            yield (f, self.index[self.d.doc2bow(t)].mean())
 
     def top_k(self, k):
         '''
@@ -62,28 +89,7 @@ class Comparitor():
             min_name, min_score = l[0]
             if score > min_score:
                 heapq.heapreplace(l, (fname, score))
-        return l
-        
-    def gen_files(self, path):
-        '''
-        '''
-        for f in os.listdir(path):
-            yield os.path.join(path, f)
-
-    def gen_sample(self, path, n):
-        '''
-        '''
-        return (x for _, x in heapq.nlargest(n, ((random.random(), f) for f in self.gen_files(path))))
-
-    def build_dict(self, train_dir):
-        '''
-        '''
-        files_gen = (tokenize(f) for f in self.gen_files(train_dir))
-        d = corpora.Dictionary(i for i in files_gen) 
-        once_ids = [tokenid for tokenid, docfreq in d.dfs.items() if docfreq == 1]
-        d.filter_tokens(once_ids)
-        d.compactify()
-        return d
+        return l        
     
 if __name__ == '__main__':
     args = sys.argv
