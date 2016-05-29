@@ -63,7 +63,7 @@ class Comparitor():
         self.lsi = models.LsiModel.load('models/model.lsi')
         print('\nBuilding similarity index\n{}'.format('~'*40))
         self.index = similarities.Similarity('models/lsi.index', self.lsi[self.corpus],
-                                             num_features=lsi.num_topics)
+                                             num_features=self.lsi.num_topics)
         
     def __iter__(self):
         '''
