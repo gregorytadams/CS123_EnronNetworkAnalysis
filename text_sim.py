@@ -5,12 +5,13 @@ import os
 import sys
 import logging
 import random
+import csv
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 stopwords = set('for a of the and or to in and as at from'.split())
 
 class Comparitor():
-    def __init__(self, train_dir, test_dir, num_topics=200):
+    def __init__(self, train_dir, test_dir, num_dims=200):
         '''
         '''
         self.train_dir = train_dir
@@ -21,11 +22,10 @@ class Comparitor():
         corpora.MmCorpus.serialize('models/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
         print('Building LSI model\n{}'.format('~'*40))
-        models.LsiModel(self.corpus, id2word=self.d, num_topics=num_topics).save('models/model.lsi')
+        models.LsiModel(self.corpus, id2word=self.d, num_topics=num_dims).save('models/model.lsi')
         self.lsi = models.LsiModel.load('models/model.lsi')
         print('Building similarity index\n{}'.format('~'*40))
         self.index = similarities.Similarity('models/lsi.index', self.lsi[self.corpus], self.corpus.num_terms)
-        
         
     def __iter__(self):
         '''
@@ -64,7 +64,7 @@ class Comparitor():
     def tokenize(self, fname):
         '''
         '''
-        return [word for word in open(fname).read().lower().split() if not word in stopwords]
+        return [word for word in open(fname).read().lower().split()[:-44] if not word in stopwords]
 
     def build_dict(self, train_dir):
         '''
@@ -78,7 +78,14 @@ class Comparitor():
     
 if __name__ == '__main__':
     args = sys.argv
-    if len(args) == 3:
-        c = Comparitor(gen_files(args[1]), gen_files(args[2]))
+    if len(args) == 6:
+        c = Comparitor(args[1], args[2], num_dims = args[5])
+        top_k = sorted(c.top_k(sys.argv[4]), key=lambda tup: tup[1])[::-1]
+        with open(args[3], 'wb') as csvfile:
+            writer = csv.writer(csvfile)
+            for tup in top_k:
+                writer.writerow(tup)
+            
+        
     else:
-        print('Usage: python3 <train_dir> <test_dir>')
+        print('Usage: python3 <train_dir> <test_dir> <output_fname> <k (top k)> <n (dimensions)>')
