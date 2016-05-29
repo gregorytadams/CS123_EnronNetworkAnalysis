@@ -37,10 +37,9 @@ sudo python3 -m pip install --upgrade gensim
 sudo python3 -m pip install --upgrade networkx
 sudo mkdir /mnt/enron
 sudo mount /dev/xvdf /mnt/enron
-cd /mnt/enron/
+cd /mnt/enron/CS123_EnronNetworkAnalysis
 sudo apt-get update
 sudo apt-get install unzip
 sudo apt-get install sqlite3
 sudo apt-get install git
-sudo apt-get clone 
-sudo git clone https://github.com/gregorytadams/CS123_EnronNetworkAnalysis.git
+
