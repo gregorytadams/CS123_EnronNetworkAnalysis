@@ -10,6 +10,18 @@ import csv
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 stopwords = set('for a of the and or to in and as at from this is with that be any all if'.split())
 
+def tokenize(fname):
+    '''
+    '''
+    words = []
+    n = 0
+    for line in open(fname):
+        n += 1
+        if n > 4:
+            for word in line.lower().split():
+                words.append(word)
+    return words[:-44]
+
 class Comparitor():
     def __init__(self, train_dir, test_dir, num_dims=200):
         '''
@@ -60,18 +72,6 @@ class Comparitor():
         '''
         '''
         return (x for _, x in heapq.nlargest(n, ((random.random(), f) for f in self.gen_files(path))))
-
-    def tokenize(self, fname):
-        '''
-        '''
-        words = []
-        n = 0
-        for line in open(fname):
-            n += 1
-            if n > 4:
-                for word in line.lower().split():
-                    words.append(word)
-        return words[:-44]
 
     def build_dict(self, train_dir):
         '''
