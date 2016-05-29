@@ -20,7 +20,7 @@ def tokenize(fname):
         if n > 4:
             for word in line.lower().split():
                 words.append(word)
-    return words[:-44]
+    return words[:-46]
 
 class Comparitor():
     def __init__(self, train_dir, test_dir, num_dims=200):
