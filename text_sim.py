@@ -28,12 +28,12 @@ def gen_files(path):
     '''
     '''
     for f in os.listdir(path):
-        yield f
+        yield path + f
 
 def gen_sample(path, n):
     '''
     '''
-    return (x for _, x in nlargest(n, ((random.random(), f) for f in gen_files(path))))
+    return (path + x for _, x in nlargest(n, ((random.random(), f) for f in gen_files(path))))
 
 
 class Comparitor():
@@ -42,7 +42,7 @@ class Comparitor():
         '''
         self.train_fnames = train_fnames
         self.test_fnames = test_fnames
-        self.d = build_dict(train_fnames)       
+        self.d = build_dict([train_fnames])       
         
         corpora.MmCorpus.serialize('/tmp/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('/tmp/corpus.mm')
