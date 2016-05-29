@@ -18,10 +18,10 @@ class Comparitor():
         self.test_dir = test_dir
         print('Building dict\n{}'.format('~'*40))
         self.d = self.build_dict(train_dir) 
-        print('Building corpus\n{}'.format('-'*20))
+        print('Building corpus\n{}'.format('~'*40))
         corpora.MmCorpus.serialize('models/corpus.mm', (v for v in self))
         self.corpus = corpora.MmCorpus('models/corpus.mm')
-        print('Building LSI model\n{}'.format('-'*20))
+        print('Building LSI model\n{}'.format('~'*40))
         models.LsiModel(self.corpus, id2word=self.d, num_topics=num_topics).save('models/model.lsi')
         self.lsi = models.LsiModel.load('models/model.lsi')
         #print('Building similarity index\n{}'.format('-'*20))
