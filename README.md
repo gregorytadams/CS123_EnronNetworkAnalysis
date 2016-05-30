@@ -7,7 +7,7 @@ This repository contains the code and some results of our analysis of [Enron's i
 ###Contents
  * `text_sim.py` - Contains a class called ```Comparitor``` that builds a [Latent Semantic Indexing] model from a random sample of files in a path. It can also assign all files in the path a mean cosine similarity score, and write the top-k filenames to csv.
 
- * `models` - Contains `.mm` and `.lsi` files created with `Comparitor`. These files can be loaded as standalone instances of a training corpus and LSI model, respectively.
+ * `models` - Contains .mm and .lsi files created with `Comparitor`. These files can be loaded as standalone instances of a training corpus and LSI model, respectively.
 
  * `output` - Contains csv files of the top-k (filename, score) tuples written by `Comparitor`. 
 
