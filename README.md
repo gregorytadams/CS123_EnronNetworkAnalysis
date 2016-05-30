@@ -17,15 +17,17 @@ This repository contains the code and some results of our analysis of [Enron's i
 
  * `prep_files` - Contains scripts for setting up the EC2 instances used to run `Comparitor` in parallel.
 
+ * `Bucket_files.py` - Uniformly samples the files in `all_text` (not included) into 30 buckets containing approximately 44,000 files each. 
+
  * `database_funcs.py` - Utility functions for interfacing with an sqlite3 database.
 
  * `network.py` - Uses Networkx to build a network from all of the emails that had metadata associated with them (600k). Then uses a ranking algorithm to find the 10 people with the highest weights in the graph and saves it to an output file. Requires the database created by parse_xmls.py
  
  * `parse_xmls.py` - From the unzipped xml files, creates a database containing the metadata for each email. Used with network.py to build the network.
 
- * `Bucket_files.py` - Uniformly samples the files in `all_text` (not included) into 30 buckets containing approximately 44,000 files each. 
+ * `setup_instance.sh` - Installs and updates all dependencies, including git, pip, and unzip in addition to the python dependencies. 
 
-###Dependencies
+###Python dependencies
  * [numpy]
  * [scipy]
  * [gensim]
