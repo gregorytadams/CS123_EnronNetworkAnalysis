@@ -28,8 +28,6 @@ This repository contains the code and some results of our analysis of [Enron's i
  * [scipy]
  * [gensim]
  * [networkx]
- * [sqlite3]
- * [unzip]
 
 All of the above (and more) can be installed by running `setup_instance.sh`
 
