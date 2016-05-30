@@ -120,9 +120,9 @@ class Comparitor():
         l = sorted(l, key=lambda tup: tup[1])[::-1]
         if save:
             with open(self.out_fname, 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            for tup in l:
-                writer.writerow(tup)   
+                writer = csv.writer(csvfile)
+                for tup in l:
+                    writer.writerow(tup)   
         return l        
     
 if __name__ == '__main__':
