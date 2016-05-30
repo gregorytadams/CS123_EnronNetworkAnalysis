@@ -26,8 +26,13 @@ def tokenize(fname):
 def gen_files(path, n=None):
     '''
     '''
-    for f in os.listdir(path)[:n]:
-        yield os.path.join(path, f)
+    if n is None:
+        for f in os.listdir(path):
+            yield os.path.join(path, f)
+    else:
+        random.seed(666)
+        for f in random.sample(os.listdir(path), n):
+            yield os.path.join(path, f)
 
 def gen_tokens(path, n=None):
     '''
