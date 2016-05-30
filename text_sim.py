@@ -136,5 +136,4 @@ if __name__ == '__main__':
     opts, args = parser.parse_args()
     c = Comparitor(args['path'], args['outf'])
     c.top_k(args['topk'], save=True)
-    else:
-        print('Usage:\n\tpython3 <path> <output_csv_fname> <top_k> <n_dims> <n_train_files>')
+    
