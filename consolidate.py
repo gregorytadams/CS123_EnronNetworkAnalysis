@@ -9,4 +9,4 @@ for f in os.listdir('output/'):
             try:
                 copyfile(row[0], 'consolidated_output/' + row[0].split('/')[-1])
             except Exception:
-                pass
+                print(f)
