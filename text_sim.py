@@ -133,7 +133,7 @@ if __name__ == '__main__':
     parser.add_option('-n', '--ndims', dest='ndim', help='Dimensionality of LSI model', default=200)
     parser.add_option('-t', '--train', dest='ndim', help='Number of training sample files', default=1000)
     parser.add_option('-s', '--seed', dest='seed', help='Seed for training data sample', default=666)
-    opts, args = parser.parse_args()
-    c = Comparitor(args['path'], args['outf'])
+    o, _ = parser.parse_args()
+    c = Comparitor(o.path, o.outf, o.ndims, o.train, o.seed)
     c.top_k(args['topk'], save=True)
     
