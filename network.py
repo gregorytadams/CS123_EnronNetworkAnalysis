@@ -5,6 +5,12 @@ import json
 import heapq
 
 def make_network():
+        '''
+        takes all of the tos and froms from the
+        metadata databse and creates a 
+        networkx object weighted by the number
+        of emails sent between two people
+        '''
 
         G = nx.Graph()
 
