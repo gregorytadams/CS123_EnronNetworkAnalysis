@@ -115,7 +115,11 @@ class Comparitor():
         '''
         l = [('', 0)] * k
         heapq.heapify(l)
+        n = 0
         for fname, score in self.sim_query():
+            if n%1000 == 0:
+                print('Processed {} entries'n)
+            n += 1
             min_name, min_score = l[0]
             if score > min_score:
                 heapq.heapreplace(l, (fname, score))
@@ -137,5 +141,5 @@ if __name__ == '__main__':
     parser.add_option('-s', '--seed', dest='seed', help='Seed for training data sample', default=666)
     o, _ = parser.parse_args()
     c = Comparitor(o.path, o.outf, o.ndims, o.train, o.seed)
-    c.top_k(args['topk'], save=True)
+    c.top_k(o.topk, save=True)
     
