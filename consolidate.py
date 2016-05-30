@@ -6,6 +6,7 @@ for f in os.listdir('output/'):
     with open('output/' + f) as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
-            copyfile(row[0], 'consolidated_output/' + row[0].split('/')[-1])
-            
-            
+            try:
+                copyfile(row[0], 'consolidated_output/' + row[0].split('/')[-1])
+            except Exception:
+                pass
