@@ -1,6 +1,6 @@
 Modeling Enron’s Email Culture Through Emails
 --------------------------
-#Jonathan Kyl, Greg Adams, & Graham Northrup
+###Jonathan Kyl, Greg Adams, & Graham Northrup
 
 This is the git repository containing the following files for our CS123 project:
 
