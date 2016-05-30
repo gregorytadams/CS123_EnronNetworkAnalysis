@@ -21,8 +21,21 @@ This repository contains the code and some results of our analysis of [Enron's i
 
  * `network.py` Uses Networkx to build a network from all of the emails that had metadata associated with them (600k). Then uses a ranking algorithm to find the 10 people with the highest weights in the graph and saves it to an output file. Requires the database created by parse_xmls.py
  
- * `parse_xmls.py` From the unzipeed xml files, creates a database containing the metadata for each email. Used with network.py to build the network.
+ * `parse_xmls.py` From the unzipped xml files, creates a database containing the metadata for each email. Used with network.py to build the network.
 
+###Dependencies
+ * [numpy]
+ * [scipy]
+ * [gensim]
+ * [networkx]
+ * [sqlite3]
+ * [unzip]
+
+All of the above (and more) can be installed by running `setup_instance.sh`
 
 [Enron's internal email database]: <https://aws.amazon.com/datasets/enron-email-data/>
 [Latent Semantic Indexing]: <https://en.wikipedia.org/wiki/Latent_semantic_indexing>
+[numpy]: <https://github.com/numpy/numpy>
+[scipy]: <https://github.com/scipy/scipy>
+[gensim]: <https://github.com/piskvorky/gensim>
+[networkx]: <https://github.com/networkx/networkx>
