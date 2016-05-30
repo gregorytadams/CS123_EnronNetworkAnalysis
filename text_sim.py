@@ -116,20 +116,18 @@ class Comparitor():
             min_name, min_score = l[0]
             if score > min_score:
                 heapq.heapreplace(l, (fname, score))
+        l = sorted(l, key=lambda tup: tup[1])[::-1]
         if save:
             with open(self.out_fname, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            for tup in top_k:
+            for tup in l:
                 writer.writerow(tup)   
         return l        
     
 if __name__ == '__main__':
     args = sys.argv
     if len(args) == 5:
-        c = Comparitor(args[1], n_dims = int(args[4]))
-        print('\nFinding top {} similarities\n{}'.format(args[3], '~'*40))
-        top_k = sorted(c.top_k(int(sys.argv[3])), key=lambda tup: tup[1])[::-1]
-        print('\nWriting top {} similarities to "{}"\n{}'.format(args[3], args[2], '~'*40))
-        
+        c = Comparitor(args[1], args[2], n_dims = int(args[4]), n_train_files = int(args[5]))
+        c.top_k(args[3], save=True)
     else:
-        print('Usage: python3 <path> <output_csv_fname> <k (top k)> <n (dimensions)>')
+        print('Usage:\n\tpython3 <path> <output_csv_fname> <top_k> <n_dims> <n_train_files>')
