@@ -1,4 +1,4 @@
-Modeling Enron’s Email Culture Through Emails
+Modeling Enron’s Corporate Culture Through Emails
 --------------------------
 ####Jonathan Kyl, Greg Adams, & Graham Northrup
 
