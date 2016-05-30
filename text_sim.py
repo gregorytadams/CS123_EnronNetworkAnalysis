@@ -9,10 +9,13 @@ import csv
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 stopwords = set(('for a of the and or to in and as at from this is with that be any all if'+\
-                 'x-sdoc: i ').split())
+                 'x-sdoc: i').split())
 
 def tokenize(fname):
     '''
+    Takes a file and reduces it to a list of "tokens": strings not forbidden by the set of 
+    stopwords that fall within the approximate bounds of the email body (excluding the pre-
+    and postscript). 
     '''
     words = []
     n = 0
@@ -25,6 +28,8 @@ def tokenize(fname):
     
 def gen_files(path, n=None):
     '''
+    Generates filenames in a given path (don't want to just use os.listdir, due to memory
+    constraints). If n is not None, generates an n-length pseudorandom sample of the files.
     '''
     if n is None:
         for f in os.listdir(path):
@@ -36,6 +41,8 @@ def gen_files(path, n=None):
 
 def gen_tokens(path, n=None):
     '''
+    Calls tokenize() on a gen_files() generator, and yields a (file, tokens) tuple only if 
+    there are more than zero valid tokens.
     '''
     for f in gen_files(path, n):
         t = tokenize(f)
@@ -44,6 +51,8 @@ def gen_tokens(path, n=None):
             
 def build_dict(path, n=None):
     '''
+    Calls gen_tokens() on a given path, and indexes the tokens into a gensim dictionary. Then, 
+    removes tokens that only occur once, and rehashes the entries in order to save memory.
     '''
     tokens_gen = (t for _, t in gen_tokens(path, n))
     d = corpora.Dictionary(i for i in tokens_gen) 
@@ -55,6 +64,10 @@ def build_dict(path, n=None):
 class Comparitor():
     def __init__(self, path, n_dims=200):
         '''
+        Generates a "Latent Semantic Indexing" model based on a corpus of tokens from a 
+        pseudorandom sample of files in the given path. Doesn't load them all into memory
+        at once - uses an __iter__ block to process files one by one. The LSI model is a 
+        decomposition of the space of all tokens into an "n_dims"-dimensional space.
         '''
         self.n_train_files = 1000
         self.path = path
@@ -72,18 +85,25 @@ class Comparitor():
         
     def __iter__(self):
         '''
+        Iterates over a pseudorandom sampling of files in the given directory - yields
+        (filename, bag_of_words) tuples for each file in the sample with more than zero 
+        valid tokens.
         '''
         for f, t in gen_tokens(self.path, self.n_train_files):
             yield (f, self.d.doc2bow(t))
 
     def sim_query(self):
         '''
+        Iterates over all files in the given directory to calculate the mean cosine similarity of 
+        a bag of words to the LSI model. Yields (filename, score) tuples for each file with more 
+        than zero valid tokens.
         '''
         for f, t in gen_tokens(self.path):
             yield (f, self.index[self.d.doc2bow(t)].mean())
 
     def top_k(self, k):
         '''
+        Returns a heap of the top-k scores for a sim_query() in a directory. 
         '''
         l = [('', 0)] * k
         heapq.heapify(l)
