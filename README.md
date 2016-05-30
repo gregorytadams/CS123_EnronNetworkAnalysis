@@ -1,11 +1,10 @@
 Modeling Enron’s Email Culture Through Emails
 --------------------------
-##Jonathan Kyl, Greg Adams, & Graham Northrup
+#Jonathan Kyl, Greg Adams, & Graham Northrup
 
 This is the git repository containing the following files for our CS123 project:
 
-##```text_sim.py```:
-Contains a class called ```Comparitor``` that builds a Latent Semantic Indexing model from a random sample of a bucket of emails, and assigns all emails in that bucket a mean cosine similarity score. 
+```text_sim.py``` - Contains a class called ```Comparitor``` that builds a Latent Semantic Indexing model from a random sample of a bucket of emails, and assigns all emails in that bucket a mean cosine similarity score. 
 
 parse_xmls.py From the unzipeed xml files, creates a database containing the metadata for each email. Used with network.py to build the network.
 
