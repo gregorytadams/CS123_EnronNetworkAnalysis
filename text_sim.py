@@ -75,6 +75,8 @@ class Comparitor():
         out_fname_stripped = out_fname.split('.')[-2].split('/')[-1]
         self.n_dims = n_dims
         self.n_train_files = n_train_files
+        self.seed = seed
+        
         print('\nBuilding dict\n{}'.format('~'*40))
         self.d = build_dict(path, n=self.n_train_files, seed=seed)
         print('\nBuilding corpus\n{}'.format('~'*40))
