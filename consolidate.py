@@ -2,6 +2,7 @@ import os, sys, csv
 from shutil import copyfile
 
 for f in os.listdir('output/'):
+    print(f)
     with open('output/' + f) as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
