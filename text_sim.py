@@ -118,7 +118,7 @@ class Comparitor():
         n = 0
         for fname, score in self.sim_query():
             if n%1000 == 0:
-                print('Processed {} entries'n)
+                print('Processed {} entries'.format(n))
             n += 1
             min_name, min_score = l[0]
             if score > min_score:
