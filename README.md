@@ -11,11 +11,13 @@ This repository contains the code and some results of our analysis of [Enron's i
 
  * `output` - Contains csv files of the top-k (filename, score) tuples written by `Comparitor`.
 
- * `consolidate.py` - Parses the csv files in `output` which contain the top-k results as found by `Comparitor`, and copies the corresponding files from `all_files` to `consolidated_output` (not included, as they exceed git's size limits). 
+ * `consolidate.py` - Parses the csv files in `output` which contain the top-k results as found by `Comparitor`, and copies the corresponding files from `all_files` to `consolidated_output` (not included, as they exceed git's size limits).
 
- * `prep_files` Contains scripts for setting up the EC2 instances used to run `Comparitor` in parallel.
+ * `final_output` - Contains multiple results of running `Comparitor` on `consolidated_output` in csv form. 
 
- * `database_funcs.py` Utility functions for interfacing with an sqlite3 database.
+ * `prep_files` - Contains scripts for setting up the EC2 instances used to run `Comparitor` in parallel.
+
+ * `database_funcs.py` - Utility functions for interfacing with an sqlite3 database.
 
  * `network.py` Uses Networkx to build a network from all of the emails that had metadata associated with them (600k). Then uses a ranking algorithm to find the 10 people with the highest weights in the graph and saves it to an output file. Requires the database created by parse_xmls.py
  
