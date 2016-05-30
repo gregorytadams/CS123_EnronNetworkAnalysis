@@ -5,6 +5,13 @@ import sqlite3
 from database_funcs import open_db, commit_db
 
 def read_and_parse(filename):
+    '''
+    Goes through the xmls and grabs all the en=mail metadata
+
+    inputs: filename of xml from enron email dataset
+
+    outputs: a dirctionary of all the emails' metadata including ID
+    '''
 	tree = ET.parse(filename)
 	root = tree.getroot()
 	d = {}
@@ -12,13 +19,19 @@ def read_and_parse(filename):
 		if doc.attrib['DocType'] == 'Message':
 			ID = doc.attrib['DocID']
 			d[ID] = {}
-			for child in doc[0]: #iterates through children of <tags>
+			for child in doc[0]:
 				d[ID][child.attrib['TagName']] = {key: child.attrib[key] for key in child.attrib if key != 'TagName'}
-	return d #d["3.818877.G3T4II30F0UK4YM4G2XQMIIKYS451SXUA"]
+	return d
 
 def store_in_db(d, c, db):
-	#c, db = open_db(db_path)
-	# fields: to, from, subject, date, has_attachments
+    '''
+    Takes metadata dictionary from read_and_parse and stores it in a database
+    
+    Inputs:
+    d, the dictionary from read_and_parse
+    c, the cursor from the database
+    db, the database
+    '''
 	l = []
 	l2 = []
 	for ID in d:
@@ -39,19 +52,12 @@ def store_in_db(d, c, db):
 			continue
 		db_args = (ID, To, From, Subject, Date, HasAttachments)
 		c.execute('INSERT INTO messages VALUES(?,?,?,?,?,?)', db_args)
-
-		#except Exception as e:
-		#	l.append(e)
-		#	continue
-	#print(l)
-	#print(l2)
-	print(len(l2))
-	print(len(l))
-	#commit_db(db)
+	# print('Number partially committed: {}'.format(len(l2)))
+	# print('Number not committed: {}'.format(len(l)))
 
 def main(filename, db_path):
 	c, db = open_db(db_path)
-	print(filename)
+	# print(filename)
 	d = read_and_parse(filename)
 	store_in_db(d,c,db)
 	commit_db(db)
