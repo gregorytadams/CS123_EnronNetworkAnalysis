@@ -5,9 +5,9 @@ Modeling Enron’s Email Culture Through Emails
 This repository contains the code and some results of our analysis of [Enron's internal email database].
 
 ###Files
- * `text_sim.py` - Contains a class called ```Comparitor``` that builds a Latent Semantic Indexing model from a random sample of files in a path. It can also assign all files in the path a mean cosine similarity score, and write the top-k ```(filename, score)``` tuples to csv.
+ * `text_sim.py` - Contains a class called ```Comparitor``` that builds a Latent Semantic Indexing model from a random sample of files in a path. It can also assign all files in the path a mean cosine similarity score, and write the top-k filenames to csv.
 
- * `prep_files` Directory containing scripts etc. for setting up the EC2 instances use to run the text similarity in parallel.
+ * `prep_files` Directory containing scripts for setting up the EC2 instances use to run the text similarity in parallel.
 
  * `database_funcs.py` Basic stuff for working with databases.
 
