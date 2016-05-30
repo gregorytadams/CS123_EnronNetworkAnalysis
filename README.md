@@ -29,7 +29,7 @@ This repository contains the code and some results of our analysis of [Enron's i
  * [gensim]
  * [networkx]
 
-All of the above (and more) can be installed by running `setup_instance.sh`
+All of the above (and more) can be installed by running `$ ./setup_instance.sh`
 
 [Enron's internal email database]: <https://aws.amazon.com/datasets/enron-email-data/>
 [Latent Semantic Indexing]: <https://en.wikipedia.org/wiki/Latent_semantic_indexing>
