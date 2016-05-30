@@ -62,23 +62,28 @@ def build_dict(path, n=None):
     return d
 
 class Comparitor():
-    def __init__(self, path, n_dims=200):
+    def __init__(self, path, out_fname, n_dims=200, n_train_files=1000):
         '''
         Generates a "Latent Semantic Indexing" model based on a corpus of tokens from a 
         pseudorandom sample of files in the given path. Doesn't load them all into memory
         at once - uses an __iter__ block to process files one by one. The LSI model is a 
         decomposition of the space of all tokens into an "n_dims"-dimensional space.
         '''
-        self.n_train_files = 1000
         self.path = path
+        self.out_fname = out_fname
+        out_fname_stripped = out_fname.split('.')[-2].split('/')[-1]
+        self.n_dims = n_dims
+        self.n_train_files = n_train_files
         print('\nBuilding dict\n{}'.format('~'*40))
-        self.d = build_dict(path, n=self.n_train_files) 
+        self.d = build_dict(path, n=self.n_train_files)
         print('\nBuilding corpus\n{}'.format('~'*40))
-        corpora.MmCorpus.serialize('models/corpus.mm', (v for _, v in self))
-        self.corpus = corpora.MmCorpus('models/corpus.mm')
+        corpora.MmCorpus.serialize('models/{}_corpus.mm'.format(out_fname_stripped),
+                                   (v for _, v in self))
+        self.corpus = corpora.MmCorpus('models/{}_corpus.mm'.format(out_fname_stripped))
         print('\nBuilding LSI model\n{}'.format('~'*40))
-        models.LsiModel(self.corpus, id2word=self.d, num_topics=n_dims).save('models/model.lsi')
-        self.lsi = models.LsiModel.load('models/model.lsi')
+        models.LsiModel(self.corpus, id2word=self.d, num_topics=n_dims)\
+              .save('models/{}_model.lsi'.format(out_fname_stripped))
+        self.lsi = models.LsiModel.load('models/{}_model.lsi'.format(out_fname_stripped))
         print('\nBuilding similarity index\n{}'.format('~'*40))
         self.index = similarities.MatrixSimilarity(self.lsi[self.corpus],
                                                    num_features = self.corpus.num_terms)
@@ -101,7 +106,7 @@ class Comparitor():
         for f, t in gen_tokens(self.path):
             yield (f, self.index[self.d.doc2bow(t)].mean())
 
-    def top_k(self, k):
+    def top_k(self, k, save=True):
         '''
         Returns a heap of the top-k scores for a sim_query() in a directory. 
         '''
@@ -111,6 +116,11 @@ class Comparitor():
             min_name, min_score = l[0]
             if score > min_score:
                 heapq.heapreplace(l, (fname, score))
+        if save:
+            with open(self.out_fname, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            for tup in top_k:
+                writer.writerow(tup)   
         return l        
     
 if __name__ == '__main__':
@@ -120,9 +130,6 @@ if __name__ == '__main__':
         print('\nFinding top {} similarities\n{}'.format(args[3], '~'*40))
         top_k = sorted(c.top_k(int(sys.argv[3])), key=lambda tup: tup[1])[::-1]
         print('\nWriting top {} similarities to "{}"\n{}'.format(args[3], args[2], '~'*40))
-        with open(args[2], 'w', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            for tup in top_k:
-                writer.writerow(tup)   
+        
     else:
         print('Usage: python3 <path> <output_csv_fname> <k (top k)> <n (dimensions)>')
