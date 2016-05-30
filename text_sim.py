@@ -1,5 +1,6 @@
 from gensim import corpora, similarities, models
 from collections import defaultdict
+from optparse import OptionParser
 import heapq
 import os
 import sys
@@ -26,7 +27,7 @@ def tokenize(fname):
                 words.append(word)
     return words[:-50]
     
-def gen_files(path, n=None):
+def gen_files(path, n, seed):
     '''
     Generates filenames in a given path (don't want to just use os.listdir, due to memory
     constraints). If n is not None, generates an n-length pseudorandom sample of the files.
@@ -35,26 +36,26 @@ def gen_files(path, n=None):
         for f in os.listdir(path):
             yield os.path.join(path, f)
     else:
-        random.seed(666)
+        random.seed(seed)
         for f in random.sample(os.listdir(path), n):
             yield os.path.join(path, f)
 
-def gen_tokens(path, n=None):
+def gen_tokens(path, n=None, seed=666):
     '''
     Calls tokenize() on a gen_files() generator, and yields a (file, tokens) tuple only if 
     there are more than zero valid tokens.
     '''
-    for f in gen_files(path, n):
+    for f in gen_files(path, n, seed):
         t = tokenize(f)
         if len(t) > 0:
             yield (f, t)
             
-def build_dict(path, n=None):
+def build_dict(path, n=None, seed=666):
     '''
     Calls gen_tokens() on a given path, and indexes the tokens into a gensim dictionary. Then, 
     removes tokens that only occur once, and rehashes the entries in order to save memory.
     '''
-    tokens_gen = (t for _, t in gen_tokens(path, n))
+    tokens_gen = (t for _, t in gen_tokens(path, n, seed))
     d = corpora.Dictionary(i for i in tokens_gen) 
     once_ids = [tokenid for tokenid, docfreq in d.dfs.items() if docfreq == 1]
     d.filter_tokens(once_ids)
@@ -62,7 +63,7 @@ def build_dict(path, n=None):
     return d
 
 class Comparitor():
-    def __init__(self, path, out_fname, n_dims=200, n_train_files=1000):
+    def __init__(self, path, out_fname, n_dims=200, n_train_files=1000, seed=666):
         '''
         Generates a "Latent Semantic Indexing" model based on a corpus of tokens from a 
         pseudorandom sample of files in the given path. Doesn't load them all into memory
@@ -75,7 +76,7 @@ class Comparitor():
         self.n_dims = n_dims
         self.n_train_files = n_train_files
         print('\nBuilding dict\n{}'.format('~'*40))
-        self.d = build_dict(path, n=self.n_train_files)
+        self.d = build_dict(path, n=self.n_train_files, seed=seed)
         print('\nBuilding corpus\n{}'.format('~'*40))
         corpora.MmCorpus.serialize('models/{}_corpus.mm'.format(out_fname_stripped),
                                    (v for _, v in self))
@@ -94,7 +95,7 @@ class Comparitor():
         (filename, bag_of_words) tuples for each file in the sample with more than zero 
         valid tokens.
         '''
-        for f, t in gen_tokens(self.path, self.n_train_files):
+        for f, t in gen_tokens(self.path, self.n_train_files, self.seed):
             yield (f, self.d.doc2bow(t))
 
     def sim_query(self):
@@ -125,9 +126,15 @@ class Comparitor():
         return l        
     
 if __name__ == '__main__':
-    args = sys.argv
-    if len(args) == 5:
-        c = Comparitor(args[1], args[2], n_dims = int(args[4]), n_train_files = int(args[5]))
-        c.top_k(args[3], save=True)
+    parser = OptionParser()
+    parser.add_option('-p', '--path', dest='path', help='Directory to analyze', default=None)
+    parser.add_option('-o', '--outf', dest='outf', help='Output csv filepath', default=None)
+    parser.add_option('-k', '--topk', dest='topk', help='Size of top-k heap', default=100)
+    parser.add_option('-n', '--ndims', dest='ndim', help='Dimensionality of LSI model', default=200)
+    parser.add_option('-t', '--train', dest='ndim', help='Number of training sample files', default=1000)
+    parser.add_option('-s', '--seed', dest='seed', help='Random seed for sampling', default=666)
+    opts, args = parser.parse_args()
+    c = Comparitor(args['path'], args['outf'])
+    c.top_k(args['topk'], save=True)
     else:
         print('Usage:\n\tpython3 <path> <output_csv_fname> <top_k> <n_dims> <n_train_files>')
